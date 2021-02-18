@@ -1,5 +1,7 @@
 # aquacal
 A sample project that demonstrates mocking in Python.
+Many examples in this repo are based on those from this excellent tutorial: https://realpython.com/python-mock-library/#the-mock-object
+
 # Python Mock and MagicMock
 
 The Mock class can be used as a base class for mocking objects.
