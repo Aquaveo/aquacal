@@ -5,7 +5,7 @@ import requests
 def is_weekend():
     today = datetime.today()
     # Python's datetime library treats Monday as 0 and Sunday as 6
-    return (today.weekday() > 4)
+    return today.weekday() > 4
 
 
 def get_holidays():
