@@ -1,0 +1,8 @@
+name: mock
+channels:
+  - defaults
+dependencies:
+  - python
+  - requests
+  - coverage
+  - pytest
