@@ -34,5 +34,14 @@ class AquaEvent:
             raise ValueError("The date property must be a valid datetime object.")
         self._date = val
 
+    @property
+    def days_left(self):
+        diff = self.date - datetime.now()
+
+        if diff.days > 0:
+            return diff.days
+
+        return 0
+
     def get_summary(self):
-        return f'{self.name}: {self.date.strftime("%A, %B %D, %Y @ %I:%M %p")}'
+        return f'Only {self.days_left} days left until {self.name} ({self.date.strftime("%A, %B %D, %Y @ %I:%M %p")})'
