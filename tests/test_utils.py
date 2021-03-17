@@ -1,11 +1,13 @@
-import datetime
+from datetime import datetime
 import unittest
 from unittest import mock
 
+import pytest
+from freezegun import freeze_time
 from requests import Response
 from requests.exceptions import Timeout
 
-from aquacal.utils import is_weekend, get_holidays
+from aquacal.utils import is_weekend, get_holidays, AquaEvent
 
 
 def mock_request_get(url):
@@ -30,7 +32,7 @@ class TestUtils(unittest.TestCase):
     def test_is_weekend__on_weekend(self, mock_datetime):
         """Test is_weekend on a weekend day."""
         # You can control the return value of a mocked function
-        a_saturday = datetime.datetime(2021, 2, 13)
+        a_saturday = datetime(2021, 2, 13)
         mock_datetime.today.return_value = a_saturday
 
         ret = is_weekend()
@@ -41,7 +43,7 @@ class TestUtils(unittest.TestCase):
     def test_is_weekend__on_weekday(self, mock_datetime):
         """Test is_weekend on a weekday."""
         # You can control the return value of a mocked function
-        a_monday = datetime.datetime(2021, 2, 15)
+        a_monday = datetime(2021, 2, 15)
         mock_datetime.today.return_value = a_monday
 
         ret = is_weekend()
@@ -55,7 +57,7 @@ class TestUtils(unittest.TestCase):
         # will be raised when the mock is called
         mock_request.get.side_effect = Timeout
 
-        with self.assertRaises(Timeout):
+        with pytest.raises(Timeout):
             get_holidays()
 
     @mock.patch('aquacal.utils.requests')
@@ -82,7 +84,7 @@ class TestUtils(unittest.TestCase):
         mock_request.get.side_effect = [Timeout, mock_response]
 
         # The first call should raise Timeout
-        with self.assertRaises(Timeout):
+        with pytest.raises(Timeout):
             get_holidays()
 
         # The second call should return successfully
@@ -92,4 +94,39 @@ class TestUtils(unittest.TestCase):
         # Verify get_holidays called twice
         assert mock_request.get.call_count == 2
 
+    def test_AquaEvent_name_readonly(self):
+        event = AquaEvent(name='Foo', date=datetime(2021, 2, 15, 7))
 
+        assert event.name == 'Foo'
+
+        with pytest.raises(AttributeError):
+            event.name = 'Bar'
+
+        assert event.name == 'Foo'
+
+    def test_AquaEvent_date(self):
+        event = AquaEvent(name='Bar', date=datetime(2021, 10, 1, 9))
+
+        assert event.date == datetime(2021, 10, 1, 9)
+
+        event.date = datetime(2021, 12, 29, 11)
+
+        assert event.date == datetime(2021, 12, 29, 11)
+
+    def test_AquaEvent_days_left_future(self):
+        event = AquaEvent(name='Bar', date=datetime(2021, 10, 1, 13))
+
+        with freeze_time("2021-5-25"):
+            assert event.days_left == 129
+
+    def test_AquaEvent_days_left_past(self):
+        event = AquaEvent(name='Bar', date=datetime(2021, 2, 15, 13))
+
+        with freeze_time("2021-5-25"):
+            assert event.days_left == 0
+
+    @mock.patch('aquacal.utils.AquaEvent.days_left', new_callable=mock.PropertyMock)
+    def test_AquaEvent_get_summary(self, mock_days_left):
+        mock_days_left.return_value = 100
+        event = AquaEvent(name='Bar', date=datetime(2021, 5, 25, 13))
+        assert event.get_summary() == 'Only 100 days left until Bar (Tuesday, May 05/25/21, 2021 @ 01:00 PM)'

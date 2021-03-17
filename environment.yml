@@ -5,4 +5,5 @@ dependencies:
   - python
   - requests
   - coverage
+  - freezegun
   - pytest
