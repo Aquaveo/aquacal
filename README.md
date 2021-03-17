@@ -19,7 +19,11 @@ conda env create -n environment.yml
 
 3. Open the aquacal directory as a new project in PyCharm.
 
-4. Set the Python Interpretter to use the conda environment you created in step 2.
+4. Set the Python Interpreter to use the conda environment you created in step 2.
+
+5. Review the primer content below.
+
+6. Use mock to help you write tests for the functions and classes in the `utils.py` module of the `aquacal` library.
 
 # Python Mock Primer
 
