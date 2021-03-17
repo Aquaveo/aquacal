@@ -1,10 +1,30 @@
 # aquacal
 A sample project that demonstrates mocking in Python.
+
+# Getting Started
+
+1. Clone the repository and create a new branch:
+
+```bash
+git clone https://github.com/Aquaveo/aquacal.git
+cd aquacal
+git checkout -b tutorial
+```
+
+2. Create a conda environment with the needed dependencies:
+
+```bash
+conda env create -n environment.yml
+```
+
+3. Open the aquacal directory as a new project in PyCharm.
+
+4. Set the Python Interpretter to use the conda environment you created in step 2.
+
+# Python Mock Primer
+
 Many examples in this repo are based on those from this excellent tutorial: https://realpython.com/python-mock-library/#the-mock-object
-
 Python Documentation: https://docs.python.org/3/library/unittest.mock.html
-
-# Python Mock and MagicMock
 
 The Mock class can be used as a base class for mocking objects.
 
